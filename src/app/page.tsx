@@ -1,6 +1,7 @@
 import { client } from "../../sanity/lib/client"
 import { HOMEPAGE_DATA_QUERY } from "../../sanity/lib/queries"
 import { HomePage } from "@/components/HomePage"
+import { draftMode } from "next/headers"
 import type { HomepageData, SiteSettings, HomepageSettings } from "@/types/sanity"
 
 // Revalidate every 5 minutes
@@ -36,7 +37,16 @@ const defaultHomepageSettings: HomepageSettings = {
 }
 
 async function getHomepageData(): Promise<HomepageData> {
-  const data = await client.fetch(HOMEPAGE_DATA_QUERY)
+  const isDraftMode = (await draftMode()).isEnabled
+
+  const data = await client.fetch(
+    HOMEPAGE_DATA_QUERY,
+    {},
+    {
+      perspective: isDraftMode ? "drafts" : "published",
+      stega: isDraftMode,
+    }
+  )
 
   // Merge with defaults to handle missing Sanity content
   return {
