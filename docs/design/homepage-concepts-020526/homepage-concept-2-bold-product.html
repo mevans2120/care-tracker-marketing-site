@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post Pal - AI-Powered Recovery Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================
+       RESET & BASE
+       ============================================ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0A0E17;
+      --surface: #141926;
+      --primary: #4DAFFF;
+      --healing: #2DD4A8;
+      --care: #ED7B61;
+      --text: #E4E7EC;
+      --muted: #6b7280;
+      --glass-bg: rgba(20, 25, 38, 0.6);
+      --glass-border: rgba(255, 255, 255, 0.05);
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Subtle grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(77, 175, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(77, 175, 255, 0.03) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ============================================
+       UTILITY CLASSES
+       ============================================ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary), var(--healing));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gradient-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--primary), var(--healing));
+      color: #0A0E17;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: box-shadow 0.3s ease, transform 0.2s var(--spring);
+    }
+
+    .gradient-btn:hover {
+      box-shadow: 0 0 30px rgba(77, 175, 255, 0.4), 0 0 60px rgba(45, 212, 168, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .ghost-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--primary);
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      border: 1.5px solid var(--primary);
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .ghost-btn:hover {
+      background: rgba(77, 175, 255, 0.08);
+      box-shadow: 0 0 20px rgba(77, 175, 255, 0.2);
+    }
+
+    /* Scroll animation base */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.92);
+      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--spring);
+    }
+
+    .reveal-scale.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Stagger children */
+    .stagger > * {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+    }
+
+    .stagger.visible > *:nth-child(1) { transition-delay: 0ms; opacity: 1; transform: translateY(0); }
+    .stagger.visible > *:nth-child(2) { transition-delay: 80ms; opacity: 1; transform: translateY(0); }
+    .stagger.visible > *:nth-child(3) { transition-delay: 160ms; opacity: 1; transform: translateY(0); }
+    .stagger.visible > *:nth-child(4) { transition-delay: 240ms; opacity: 1; transform: translateY(0); }
+    .stagger.visible > *:nth-child(5) { transition-delay: 320ms; opacity: 1; transform: translateY(0); }
+    .stagger.visible > *:nth-child(6) { transition-delay: 400ms; opacity: 1; transform: translateY(0); }
+
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================
+       1. NAVIGATION
+       ============================================ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 0 24px;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .nav.scrolled {
+      background: rgba(10, 14, 23, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .nav-logo {
+      font-weight: 800;
+      font-size: 24px;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--primary), var(--healing));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-cta {
+      padding: 10px 24px !important;
+      font-size: 14px !important;
+    }
+
+    .nav-mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .nav-mobile-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      margin: 5px 0;
+      transition: all 0.3s ease;
+    }
+
+    /* ============================================
+       2. HERO
+       ============================================ */
+    .hero {
+      padding: 160px 24px 80px;
+      text-align: center;
+      position: relative;
+      overflow: visible;
+    }
+
+    .hero-headline {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--muted);
+      max-width: 580px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .hero-trust {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 64px;
+    }
+
+    .hero-trust svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* Phone mockup */
+    .phone-stage {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      padding: 0 24px;
+    }
+
+    .phone-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(77, 175, 255, 0.15) 0%, rgba(45, 212, 168, 0.08) 40%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+    }
+
+    .phone-frame {
+      position: relative;
+      width: 320px;
+      background: #0D1117;
+      border-radius: 32px;
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      padding: 16px;
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 25px 80px rgba(0, 0, 0, 0.6),
+        0 0 60px rgba(77, 175, 255, 0.08);
+    }
+
+    .phone-notch {
+      width: 100px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      margin: 0 auto 16px;
+    }
+
+    .phone-screen {
+      background: var(--surface);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .app-header {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .app-progress-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 2px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .app-progress-fill {
+      height: 100%;
+      width: 68%;
+      background: linear-gradient(90deg, var(--primary), var(--healing));
+      border-radius: 2px;
+      animation: progressGrow 2s var(--ease-out) forwards;
+      animation-play-state: paused;
+    }
+
+    .phone-frame.animate .app-progress-fill {
+      animation-play-state: running;
+    }
+
+    @keyframes progressGrow {
+      from { width: 0%; }
+      to { width: 68%; }
+    }
+
+    .app-week-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .app-week-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .app-tasks {
+      padding: 12px 20px 20px;
+    }
+
+    .app-task {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .app-task:last-child {
+      border-bottom: none;
+    }
+
+    .app-task-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-task-check.done {
+      background: linear-gradient(135deg, var(--primary), var(--healing));
+      border-color: transparent;
+    }
+
+    .app-task-check.done svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .app-task-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .app-task-time {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .app-task-label {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .app-task-tag {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .tag-medication {
+      background: rgba(77, 175, 255, 0.12);
+      color: var(--primary);
+    }
+
+    .tag-activity {
+      background: rgba(45, 212, 168, 0.12);
+      color: var(--healing);
+    }
+
+    .tag-care {
+      background: rgba(237, 123, 97, 0.12);
+      color: var(--care);
+    }
+
+    /* ============================================
+       3. METRICS BAR
+       ============================================ */
+    .metrics {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(20, 25, 38, 0.4);
+      padding: 48px 24px;
+    }
+
+    .metrics-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      text-align: center;
+    }
+
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .metric-value {
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--healing));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .metric-label {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* Counter animation */
+    .metric-value .counter {
+      display: inline-block;
+    }
+
+    /* ============================================
+       4. BEFORE / AFTER
+       ============================================ */
+    .before-after {
+      padding: 120px 24px;
+    }
+
+    .ba-headline {
+      text-align: center;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .ba-sub-title {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .ba-panels {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 24px;
+      align-items: center;
+      max-width: 960px;
+      margin: 48px auto 40px;
+    }
+
+    .ba-panel {
+      border-radius: 12px;
+      padding: 32px 24px;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ba-panel-before {
+      background: var(--surface);
+      border: 1px solid rgba(237, 123, 97, 0.15);
+    }
+
+    .ba-panel-after {
+      background: var(--surface);
+      border: 1px solid rgba(45, 212, 168, 0.15);
+    }
+
+    .ba-panel-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ba-panel-before .ba-panel-label {
+      color: var(--care);
+    }
+
+    .ba-panel-after .ba-panel-label {
+      color: var(--healing);
+    }
+
+    .ba-label-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .ba-panel-before .ba-label-dot {
+      background: var(--care);
+    }
+
+    .ba-panel-after .ba-label-dot {
+      background: var(--healing);
+    }
+
+    /* Fake discharge paper */
+    .discharge-paper {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+      padding: 16px;
+      font-size: 8px;
+      line-height: 1.8;
+      color: rgba(228, 231, 236, 0.35);
+      overflow: hidden;
+      max-height: 240px;
+      position: relative;
+      font-family: 'Courier New', monospace;
+    }
+
+    .discharge-paper::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(transparent, var(--surface));
+    }
+
+    .discharge-highlight {
+      background: rgba(237, 123, 97, 0.15);
+      padding: 0 2px;
+    }
+
+    .ba-panel-caption {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* Fake clean timeline */
+    .clean-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .clean-task {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      border-left: 3px solid;
+    }
+
+    .clean-task:nth-child(1) { border-left-color: var(--primary); }
+    .clean-task:nth-child(2) { border-left-color: var(--healing); }
+    .clean-task:nth-child(3) { border-left-color: var(--care); }
+    .clean-task:nth-child(4) { border-left-color: var(--primary); }
+
+    .clean-task-time {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      min-width: 54px;
+    }
+
+    .clean-task-text {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Arrow between panels */
+    .ba-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ba-arrow-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--healing));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px rgba(77, 175, 255, 0.3);
+      animation: arrowPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes arrowPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(77, 175, 255, 0.2); }
+      50% { box-shadow: 0 0 40px rgba(77, 175, 255, 0.4); }
+    }
+
+    .ba-arrow-circle svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .ba-description {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    /* ============================================
+       5. FEATURE GRID
+       ============================================ */
+    .features {
+      padding: 120px 24px;
+    }
+
+    .features-headline {
+      text-align: center;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 56px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 32px 28px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(77, 175, 255, 0.15);
+      box-shadow: 0 0 40px rgba(77, 175, 255, 0.06);
+      transform: translateY(-4px);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .feature-icon-blue {
+      background: rgba(77, 175, 255, 0.1);
+      color: var(--primary);
+    }
+
+    .feature-icon-teal {
+      background: rgba(45, 212, 168, 0.1);
+      color: var(--healing);
+    }
+
+    .feature-icon-coral {
+      background: rgba(237, 123, 97, 0.1);
+      color: var(--care);
+    }
+
+    .feature-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ============================================
+       6. HOW IT WORKS
+       ============================================ */
+    .how-it-works {
+      padding: 120px 24px;
+      background: var(--surface);
+      position: relative;
+    }
+
+    .how-it-works::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(77, 175, 255, 0.2), transparent);
+    }
+
+    .hiw-headline {
+      text-align: center;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 72px;
+    }
+
+    .hiw-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* Connecting line */
+    .hiw-steps::before {
+      content: '';
+      position: absolute;
+      top: 44px;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--healing));
+      opacity: 0.2;
+    }
+
+    .hiw-line-progress {
+      position: absolute;
+      top: 44px;
+      left: 15%;
+      height: 2px;
+      width: 0;
+      background: linear-gradient(90deg, var(--primary), var(--healing));
+      transition: width 1.5s var(--ease-out);
+    }
+
+    .hiw-steps.visible .hiw-line-progress {
+      width: 70%;
+    }
+
+    .hiw-step {
+      text-align: center;
+      position: relative;
+    }
+
+    .hiw-number {
+      font-size: 64px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--healing));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin-bottom: 24px;
+      opacity: 0.9;
+    }
+
+    .hiw-step-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .hiw-step-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    /* ============================================
+       7. PROVIDER SECTION
+       ============================================ */
+    .providers {
+      padding: 120px 24px;
+    }
+
+    .providers-headline {
+      text-align: center;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 48px;
+    }
+
+    .provider-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      max-width: 1000px;
+      margin: 0 auto 48px;
+    }
+
+    .provider-card {
+      background: var(--surface);
+      border: 1px solid rgba(77, 175, 255, 0.1);
+      border-radius: 10px;
+      padding: 28px 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .provider-card:hover {
+      border-color: rgba(77, 175, 255, 0.25);
+      box-shadow: 0 0 30px rgba(77, 175, 255, 0.06);
+    }
+
+    .provider-card-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 16px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(77, 175, 255, 0.08);
+    }
+
+    .provider-card-icon svg {
+      width: 20px;
+      height: 20px;
+      color: var(--primary);
+    }
+
+    .provider-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .providers-cta {
+      text-align: center;
+    }
+
+    /* ============================================
+       8. FINAL CTA
+       ============================================ */
+    .final-cta {
+      padding: 120px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-cta-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .final-cta-bg::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      top: 50%;
+      left: 30%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(77, 175, 255, 0.08), transparent 60%);
+      filter: blur(80px);
+    }
+
+    .final-cta-bg::after {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      top: 50%;
+      left: 70%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(45, 212, 168, 0.06), transparent 60%);
+      filter: blur(80px);
+    }
+
+    .final-cta-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .final-headline {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .final-sub {
+      color: var(--muted);
+      font-size: 18px;
+      margin-bottom: 40px;
+    }
+
+    .final-note {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ============================================
+       9. FOOTER
+       ============================================ */
+    .footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 64px 24px 40px;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 16px;
+      max-width: 260px;
+      line-height: 1.6;
+    }
+
+    .footer-col h5 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col li {
+      margin-bottom: 10px;
+    }
+
+    .footer-col a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s ease;
+    }
+
+    .footer-col a:hover {
+      color: var(--text);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .footer-social a {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: all 0.2s ease;
+    }
+
+    .footer-social a:hover {
+      background: rgba(77, 175, 255, 0.1);
+      color: var(--primary);
+    }
+
+    .footer-social a svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .footer-bottom a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .footer-bottom a:hover {
+      color: var(--text);
+    }
+
+    .footer-bottom-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 900px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hiw-steps {
+        grid-template-columns: 1fr;
+        gap: 48px;
+        max-width: 400px;
+      }
+
+      .hiw-steps::before {
+        display: none;
+      }
+
+      .hiw-line-progress {
+        display: none;
+      }
+
+      .provider-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .ba-panels {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .ba-arrow {
+        transform: rotate(90deg);
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links {
+        display: none;
+      }
+
+      .nav-mobile-toggle {
+        display: block;
+      }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background: rgba(10, 14, 23, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 24px;
+        gap: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .hero {
+        padding: 120px 20px 60px;
+      }
+
+      .metrics-inner {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .provider-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .phone-frame {
+        width: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================
+       1. NAVIGATION
+       ============================================ -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Post Pal</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#product">Product</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#providers">For Providers</a></li>
+        <li><a href="#" class="gradient-btn nav-cta">Get Started</a></li>
+      </ul>
+      <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       2. HERO
+       ============================================ -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="hero-headline reveal">
+        <span class="gradient-text">AI</span> reads your discharge papers.<br />
+        You follow a simple timeline.
+      </h1>
+      <p class="hero-sub reveal" style="transition-delay: 100ms;">
+        Post Pal uses advanced AI to transform complex hospital discharge instructions into a personalized, day-by-day recovery plan.
+      </p>
+      <div class="hero-ctas reveal" style="transition-delay: 200ms;">
+        <a href="#" class="gradient-btn">Try Post Pal Free</a>
+        <a href="#" class="ghost-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          Watch Demo
+        </a>
+      </div>
+      <div class="hero-trust reveal" style="transition-delay: 300ms;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        HIPAA-aware. End-to-end encrypted.
+      </div>
+
+      <!-- Phone Mockup -->
+      <div class="phone-stage reveal-scale" style="transition-delay: 400ms;">
+        <div class="phone-glow"></div>
+        <div class="phone-frame" id="phoneFrame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="app-header">
+              <div class="app-progress-bar">
+                <div class="app-progress-fill"></div>
+              </div>
+              <div class="app-week-label">Week 2 - Recovery</div>
+              <div class="app-week-sub">Tuesday, Feb 5 - 4 tasks remaining</div>
+            </div>
+            <div class="app-tasks">
+              <div class="app-task">
+                <div class="app-task-check done">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#0A0E17" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <div class="app-task-info">
+                  <div class="app-task-time">9:00 AM</div>
+                  <div class="app-task-label">Take medication</div>
+                </div>
+                <span class="app-task-tag tag-medication">Medication</span>
+              </div>
+              <div class="app-task">
+                <div class="app-task-check done">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#0A0E17" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <div class="app-task-info">
+                  <div class="app-task-time">11:00 AM</div>
+                  <div class="app-task-label">15-min walk</div>
+                </div>
+                <span class="app-task-tag tag-activity">Activity</span>
+              </div>
+              <div class="app-task">
+                <div class="app-task-check"></div>
+                <div class="app-task-info">
+                  <div class="app-task-time">2:00 PM</div>
+                  <div class="app-task-label">Wound care</div>
+                </div>
+                <span class="app-task-tag tag-care">Care</span>
+              </div>
+              <div class="app-task">
+                <div class="app-task-check"></div>
+                <div class="app-task-info">
+                  <div class="app-task-time">8:00 PM</div>
+                  <div class="app-task-label">Evening medication</div>
+                </div>
+                <span class="app-task-tag tag-medication">Medication</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       3. METRICS BAR
+       ============================================ -->
+  <section class="metrics">
+    <div class="metrics-inner reveal stagger">
+      <div class="metric-item">
+        <div class="metric-value"><span class="counter" data-target="10000">0</span>+</div>
+        <div class="metric-label">Recovery plans created</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-value"><span class="counter" data-target="94">0</span>%</div>
+        <div class="metric-label">Task completion rate</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-value"><span class="counter" data-target="4.9" data-decimals="1">0</span></div>
+        <div class="metric-label">Patient satisfaction score</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       4. BEFORE / AFTER
+       ============================================ -->
+  <section class="before-after" id="product">
+    <div class="container">
+      <div class="ba-sub-title reveal">The AI Difference</div>
+      <h2 class="ba-headline reveal">From overwhelming to obvious</h2>
+
+      <div class="ba-panels">
+        <div class="ba-panel ba-panel-before reveal" style="transition-delay: 100ms;">
+          <div class="ba-panel-label"><span class="ba-label-dot"></span> Before</div>
+          <div class="discharge-paper">
+            <strong>DISCHARGE INSTRUCTIONS</strong><br/>
+            Patient: _____________ DOB: __/__/____<br/>
+            Date of Discharge: __/__/____ MRN: ________<br/><br/>
+            <span class="discharge-highlight">MEDICATIONS:</span> Continue Lisinopril 10mg daily, Metformin 500mg twice daily with meals. NEW: Amoxicillin 500mg every 8 hours for 10 days. Take with food to reduce GI upset. Do not skip doses. <span class="discharge-highlight">Acetaminophen 500mg every 6h PRN</span> for pain - do not exceed 3000mg in 24 hours...<br/><br/>
+            <span class="discharge-highlight">WOUND CARE:</span> Change dressing daily. Clean with sterile saline. Apply Bacitracin ointment to incision site. Watch for signs of infection: increased redness, swelling, warmth, drainage, fever >101.5F. Keep wound dry for 48h post-op...<br/><br/>
+            <span class="discharge-highlight">ACTIVITY:</span> No heavy lifting (>10 lbs) for 6 weeks. Begin walking short distances within 24 hours. Increase activity gradually. No driving while on narcotic pain medication. Return to work: discuss with surgeon at follow-up...<br/><br/>
+            FOLLOW-UP APPOINTMENTS: Dr. Smith - Surgery Clinic - 2 weeks post-op. Call (555) 123-4567 to schedule. Primary Care within 7 days...
+          </div>
+          <div class="ba-panel-caption">12 pages of discharge instructions</div>
+        </div>
+
+        <div class="ba-arrow reveal-scale">
+          <div class="ba-arrow-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0A0E17" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+        </div>
+
+        <div class="ba-panel ba-panel-after reveal" style="transition-delay: 200ms;">
+          <div class="ba-panel-label"><span class="ba-label-dot"></span> After</div>
+          <div class="clean-timeline">
+            <div class="clean-task">
+              <span class="clean-task-time">9:00 AM</span>
+              <span class="clean-task-text">Take Amoxicillin with breakfast</span>
+            </div>
+            <div class="clean-task">
+              <span class="clean-task-time">11:00 AM</span>
+              <span class="clean-task-text">15-min walk around the block</span>
+            </div>
+            <div class="clean-task">
+              <span class="clean-task-time">2:00 PM</span>
+              <span class="clean-task-text">Change wound dressing</span>
+            </div>
+            <div class="clean-task">
+              <span class="clean-task-time">5:00 PM</span>
+              <span class="clean-task-text">Take Amoxicillin with dinner</span>
+            </div>
+          </div>
+          <div class="ba-panel-caption">Your personalized recovery plan</div>
+        </div>
+      </div>
+
+      <p class="ba-description reveal">
+        Our AI reads, understands, and organizes every instruction from your discharge papers &mdash; medications, restrictions, appointments, milestones &mdash; into a clear daily plan.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       5. FEATURE GRID
+       ============================================ -->
+  <section class="features">
+    <div class="container">
+      <h2 class="features-headline reveal"><span class="gradient-text">Built for recovery</span></h2>
+      <div class="features-grid stagger">
+
+        <div class="feature-card">
+          <div class="feature-icon feature-icon-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          </div>
+          <h3>Timeline View</h3>
+          <p>See your entire recovery at a glance. Daily, weekly, or hourly &mdash; switch views to match your needs.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon feature-icon-teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"></path><line x1="9" y1="21" x2="15" y2="21"></line><line x1="10" y1="24" x2="14" y2="24"></line></svg>
+          </div>
+          <h3>AI Processing</h3>
+          <p>Upload a photo of your papers. Our AI handles the rest in seconds.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon feature-icon-coral">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </div>
+          <h3>Smart Notifications</h3>
+          <p>Reminders that know your schedule. Never miss a medication or appointment.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon feature-icon-teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"></circle><path d="M9.09 14.68L6 22l3.5-1 1.5 3 2.8-7.32"></path><path d="M14.91 14.68L18 22l-3.5-1-1.5 3-2.8-7.32"></path></svg>
+          </div>
+          <h3>Milestones</h3>
+          <p>Track your progress. Celebrate recovery wins. Stay motivated.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon feature-icon-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
+          <h3>Private & Secure</h3>
+          <p>Your health data is encrypted and never shared. Period.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon feature-icon-coral">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="1"></rect><rect x="14" y="2" width="8" height="8" rx="1"></rect><rect x="2" y="14" width="8" height="8" rx="1"></rect><rect x="14" y="14" width="8" height="8" rx="1"></rect></svg>
+          </div>
+          <h3>Provider Onboarding</h3>
+          <p>Your doctor can set you up in seconds with a simple QR code scan.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       6. HOW IT WORKS
+       ============================================ -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <h2 class="hiw-headline reveal">How it works</h2>
+      <div class="hiw-steps stagger" id="hiwSteps">
+        <div class="hiw-line-progress"></div>
+        <div class="hiw-step">
+          <div class="hiw-number">01</div>
+          <h3 class="hiw-step-title">Scan</h3>
+          <p class="hiw-step-desc">Take a photo of your discharge papers or upload the PDF.</p>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-number">02</div>
+          <h3 class="hiw-step-title">Process</h3>
+          <p class="hiw-step-desc">AI analyzes every instruction and creates your personalized plan.</p>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-number">03</div>
+          <h3 class="hiw-step-title">Recover</h3>
+          <p class="hiw-step-desc">Follow your daily timeline with smart reminders and milestone tracking.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       7. PROVIDER SECTION
+       ============================================ -->
+  <section class="providers" id="providers">
+    <div class="container">
+      <h2 class="providers-headline reveal">Enterprise-ready from day one.</h2>
+      <div class="provider-cards stagger">
+
+        <div class="provider-card">
+          <div class="provider-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="1"></rect><rect x="14" y="2" width="8" height="8" rx="1"></rect><rect x="2" y="14" width="8" height="8" rx="1"></rect><rect x="14" y="14" width="8" height="8" rx="1"></rect></svg>
+          </div>
+          <h4>QR Code Patient Onboarding</h4>
+        </div>
+
+        <div class="provider-card">
+          <div class="provider-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </div>
+          <h4>Real-time Recovery Monitoring</h4>
+        </div>
+
+        <div class="provider-card">
+          <div class="provider-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+          </div>
+          <h4>Institutional Dashboard</h4>
+        </div>
+
+        <div class="provider-card">
+          <div class="provider-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <h4>Multi-provider Support</h4>
+        </div>
+
+      </div>
+      <div class="providers-cta reveal">
+        <a href="#" class="ghost-btn">Schedule a Demo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       8. FINAL CTA
+       ============================================ -->
+  <section class="final-cta">
+    <div class="final-cta-bg"></div>
+    <div class="final-cta-content container">
+      <h2 class="final-headline reveal">Your recovery starts now.</h2>
+      <p class="final-sub reveal" style="transition-delay: 80ms;">Free for patients. Set up in under 2 minutes.</p>
+      <div class="reveal" style="transition-delay: 160ms;">
+        <a href="#" class="gradient-btn" style="padding: 18px 48px; font-size: 18px;">Get Started Free</a>
+        <p class="final-note">No credit card required</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       9. FOOTER
+       ============================================ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="font-size: 22px;">Post Pal</a>
+        <p>Built with care for better recovery outcomes.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          </a>
+          <a href="#" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <ul>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">How It Works</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Security</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Resources</h5>
+        <ul>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">For Providers</a></li>
+          <li><a href="#">Support</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Post Pal. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================
+       JAVASCRIPT
+       ============================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ------------------------------------------
+      // Nav scroll effect
+      // ------------------------------------------
+      var nav = document.getElementById('mainNav');
+      var scrollThreshold = 40;
+
+      function updateNav() {
+        if (window.scrollY > scrollThreshold) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+
+      window.addEventListener('scroll', updateNav, { passive: true });
+      updateNav();
+
+      // ------------------------------------------
+      // Mobile toggle
+      // ------------------------------------------
+      var mobileToggle = document.getElementById('mobileToggle');
+      var navLinks = document.getElementById('navLinks');
+
+      mobileToggle.addEventListener('click', function () {
+        navLinks.classList.toggle('open');
+      });
+
+      // Close mobile nav when a link is clicked
+      navLinks.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          navLinks.classList.remove('open');
+        });
+      });
+
+      // ------------------------------------------
+      // Scroll reveal with IntersectionObserver
+      // ------------------------------------------
+      var revealElements = document.querySelectorAll('.reveal, .reveal-scale, .stagger');
+
+      var observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -60px 0px',
+        threshold: 0.1
+      };
+
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            // Don't unobserve - keeps it simple
+          }
+        });
+      }, observerOptions);
+
+      revealElements.forEach(function (el) {
+        revealObserver.observe(el);
+      });
+
+      // ------------------------------------------
+      // Phone frame animation trigger
+      // ------------------------------------------
+      var phoneFrame = document.getElementById('phoneFrame');
+
+      var phoneObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            phoneFrame.classList.add('animate');
+          }
+        });
+      }, { threshold: 0.3 });
+
+      phoneObserver.observe(phoneFrame);
+
+      // ------------------------------------------
+      // Counter animation
+      // ------------------------------------------
+      var counters = document.querySelectorAll('.counter');
+      var countersAnimated = false;
+
+      function animateCounters() {
+        if (countersAnimated) return;
+        countersAnimated = true;
+
+        counters.forEach(function (counter) {
+          var target = parseFloat(counter.getAttribute('data-target'));
+          var decimals = parseInt(counter.getAttribute('data-decimals') || '0', 10);
+          var duration = 2000;
+          var startTime = null;
+
+          function easeOutQuart(t) {
+            return 1 - Math.pow(1 - t, 4);
+          }
+
+          function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var progress = Math.min((timestamp - startTime) / duration, 1);
+            var easedProgress = easeOutQuart(progress);
+            var current = easedProgress * target;
+
+            if (decimals > 0) {
+              counter.textContent = current.toFixed(decimals);
+            } else {
+              counter.textContent = Math.floor(current).toLocaleString();
+            }
+
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            } else {
+              if (decimals > 0) {
+                counter.textContent = target.toFixed(decimals);
+              } else {
+                counter.textContent = target.toLocaleString();
+              }
+            }
+          }
+
+          requestAnimationFrame(step);
+        });
+      }
+
+      var metricsSection = document.querySelector('.metrics');
+      var metricsObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            animateCounters();
+          }
+        });
+      }, { threshold: 0.3 });
+
+      metricsObserver.observe(metricsSection);
+
+      // ------------------------------------------
+      // Smooth scroll for anchor links
+      // ------------------------------------------
+      document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+          var href = this.getAttribute('href');
+          if (href === '#') return;
+          e.preventDefault();
+          var target = document.querySelector(href);
+          if (target) {
+            var offset = 80;
+            var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+          }
+        });
+      });
+
+    })();
+  </script>
+
+</body>
+</html>

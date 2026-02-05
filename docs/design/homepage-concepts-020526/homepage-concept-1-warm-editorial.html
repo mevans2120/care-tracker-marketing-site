@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post Pal - Recovery is hard enough. Your care plan shouldn't be.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&display=swap" rel="stylesheet">
+  <style>
+    /* ============================
+       RESET & BASE
+       ============================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: #2B3A4A;
+      background-color: #FBF7F3;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Fraunces', serif;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    /* ============================
+       UTILITIES
+       ============================ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .container--narrow {
+      max-width: 900px;
+    }
+
+    /* ============================
+       SCROLL ANIMATIONS
+       ============================ */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 600ms ease-out, transform 600ms ease-out;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-up-delay-1 { transition-delay: 100ms; }
+    .fade-up-delay-2 { transition-delay: 200ms; }
+    .fade-up-delay-3 { transition-delay: 300ms; }
+    .fade-up-delay-4 { transition-delay: 400ms; }
+
+    /* ============================
+       NAVIGATION
+       ============================ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(251, 247, 243, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(43, 58, 74, 0.06);
+    }
+
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .nav__logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Fraunces', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #2B3A4A;
+    }
+
+    .nav__logo-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+    }
+
+    .nav__logo-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+
+    .nav__link {
+      font-size: 15px;
+      font-weight: 500;
+      color: #2B3A4A;
+      opacity: 0.75;
+      transition: opacity 300ms ease;
+    }
+
+    .nav__link:hover {
+      opacity: 1;
+    }
+
+    .nav__cta {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 24px;
+      background: #1390FF;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: background 300ms ease, transform 200ms ease, box-shadow 300ms ease;
+    }
+
+    .nav__cta:hover {
+      background: #0b7de6;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(19, 144, 255, 0.3);
+    }
+
+    .nav__mobile-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .nav__mobile-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #2B3A4A;
+      border-radius: 2px;
+      transition: transform 300ms ease, opacity 300ms ease;
+    }
+
+    /* ============================
+       HERO
+       ============================ */
+    .hero {
+      padding: 140px 0 100px;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .hero__content {
+      max-width: 560px;
+    }
+
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(29, 181, 132, 0.1);
+      color: #1DB584;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .hero__badge svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .hero__headline {
+      font-size: clamp(36px, 4.5vw, 56px);
+      font-weight: 700;
+      color: #2B3A4A;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero__subheadline {
+      font-size: 19px;
+      line-height: 1.7;
+      color: #2B3A4A;
+      opacity: 0.78;
+      margin-bottom: 40px;
+    }
+
+    .hero__actions {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn--primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 18px 36px;
+      background: #1390FF;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: background 300ms ease, transform 200ms ease, box-shadow 300ms ease;
+    }
+
+    .btn--primary:hover {
+      background: #0b7de6;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(19, 144, 255, 0.3);
+    }
+
+    .btn--outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 32px;
+      background: transparent;
+      color: #1390FF;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      border-radius: 100px;
+      border: 2px solid #1390FF;
+      cursor: pointer;
+      transition: background 300ms ease, transform 200ms ease, color 300ms ease;
+    }
+
+    .btn--outline:hover {
+      background: #1390FF;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .link--arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1390FF;
+      transition: gap 300ms ease;
+    }
+
+    .link--arrow:hover {
+      gap: 12px;
+    }
+
+    .link--arrow svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 300ms ease;
+    }
+
+    .link--arrow:hover svg {
+      transform: translateX(4px);
+    }
+
+    /* Phone Mockup Placeholder */
+    .hero__visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone-mockup {
+      width: 320px;
+      height: 620px;
+      background: #fff;
+      border-radius: 40px;
+      box-shadow: 0 24px 80px rgba(43, 58, 74, 0.12), 0 2px 8px rgba(43, 58, 74, 0.06);
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .phone-mockup__notch {
+      width: 120px;
+      height: 28px;
+      background: #FBF7F3;
+      border-radius: 0 0 20px 20px;
+      margin: 0 auto 16px;
+    }
+
+    .phone-mockup__screen {
+      background: #FBF7F3;
+      border-radius: 28px;
+      height: calc(100% - 44px);
+      padding: 20px 16px;
+      overflow: hidden;
+    }
+
+    .phone-mockup__header {
+      font-family: 'Fraunces', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #2B3A4A;
+      margin-bottom: 4px;
+    }
+
+    .phone-mockup__subheader {
+      font-size: 12px;
+      color: #2B3A4A;
+      opacity: 0.5;
+      margin-bottom: 16px;
+    }
+
+    .phone-mockup__day-label {
+      font-family: 'Fraunces', serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1390FF;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid rgba(19, 144, 255, 0.15);
+    }
+
+    .phone-mockup__task {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 4px rgba(43, 58, 74, 0.06);
+    }
+
+    .phone-mockup__checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 2px solid #d6dbe1;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .phone-mockup__checkbox--done {
+      background: #1DB584;
+      border-color: #1DB584;
+      position: relative;
+    }
+
+    .phone-mockup__checkbox--done::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 6px;
+      width: 5px;
+      height: 9px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .phone-mockup__task-text {
+      font-size: 13px;
+      line-height: 1.4;
+      color: #2B3A4A;
+    }
+
+    .phone-mockup__task-time {
+      font-size: 11px;
+      color: #2B3A4A;
+      opacity: 0.45;
+      margin-top: 2px;
+    }
+
+    .phone-mockup__task-text--done {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    .phone-mockup__milestone {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: linear-gradient(135deg, rgba(29, 181, 132, 0.08), rgba(29, 181, 132, 0.04));
+      border-radius: 12px;
+      margin-top: 12px;
+      border: 1px solid rgba(29, 181, 132, 0.15);
+    }
+
+    .phone-mockup__milestone-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      color: #1DB584;
+    }
+
+    .phone-mockup__milestone-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: #1DB584;
+    }
+
+    /* ============================
+       PAIN POINTS
+       ============================ */
+    .pain-points {
+      padding: 100px 0;
+    }
+
+    .pain-points__question {
+      text-align: center;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 500;
+      color: #2B3A4A;
+      margin-bottom: 60px;
+    }
+
+    .pain-points__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+
+    .pain-point-card {
+      text-align: center;
+      padding: 48px 32px;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 2px 12px rgba(43, 58, 74, 0.04);
+      transition: transform 300ms ease, box-shadow 300ms ease;
+    }
+
+    .pain-point-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(43, 58, 74, 0.08);
+    }
+
+    .pain-point-card__icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pain-point-card__icon svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .pain-point-card__icon--papers {
+      background: linear-gradient(135deg, #fde8d8, #f5d0b3);
+      color: #c97a4a;
+    }
+
+    .pain-point-card__icon--uncertain {
+      background: linear-gradient(135deg, #dbeeff, #b9d9f7);
+      color: #3d8bd4;
+    }
+
+    .pain-point-card__icon--worried {
+      background: linear-gradient(135deg, #d4f5e8, #b1e8d1);
+      color: #2a9d6e;
+    }
+
+    .pain-point-card__text {
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.6;
+      color: #2B3A4A;
+    }
+
+    /* ============================
+       HOW IT WORKS
+       ============================ */
+    .how-it-works {
+      padding: 100px 0;
+      background: #fff;
+    }
+
+    .section-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #1390FF;
+      margin-bottom: 12px;
+    }
+
+    .section-headline {
+      font-size: clamp(30px, 3.5vw, 44px);
+      font-weight: 600;
+      color: #2B3A4A;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-subheadline {
+      font-size: 18px;
+      color: #2B3A4A;
+      opacity: 0.7;
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    .how-it-works__header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .how-it-works__header .section-subheadline {
+      margin: 0 auto;
+    }
+
+    .how-it-works__steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      position: relative;
+    }
+
+    /* Connecting dots line */
+    .how-it-works__steps::before {
+      content: '';
+      position: absolute;
+      top: 48px;
+      left: calc(16.67% + 24px);
+      right: calc(16.67% + 24px);
+      height: 3px;
+      background: repeating-linear-gradient(
+        90deg,
+        #E8A87C 0px,
+        #E8A87C 6px,
+        transparent 6px,
+        transparent 14px
+      );
+      z-index: 0;
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step__number {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1390FF, #0b7de6);
+      color: #fff;
+      font-family: 'Fraunces', serif;
+      font-size: 36px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      box-shadow: 0 8px 30px rgba(19, 144, 255, 0.2);
+    }
+
+    .step__title {
+      font-family: 'Fraunces', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #2B3A4A;
+      margin-bottom: 12px;
+    }
+
+    .step__description {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #2B3A4A;
+      opacity: 0.7;
+      max-width: 300px;
+      margin: 0 auto 24px;
+    }
+
+    .step__visual {
+      width: 100%;
+      height: 180px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: #2B3A4A;
+      opacity: 0.6;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .step__visual--scan {
+      background: linear-gradient(135deg, #dbeeff, #eaf3ff);
+    }
+
+    .step__visual--download {
+      background: linear-gradient(135deg, #d4f5e8, #e5faf2);
+    }
+
+    .step__visual--follow {
+      background: linear-gradient(135deg, #fde8d8, #faf0e8);
+    }
+
+    .step__visual-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .step__visual-icon {
+      width: 48px;
+      height: 48px;
+    }
+
+    .step__visual-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #2B3A4A;
+      opacity: 0.6;
+    }
+
+    /* ============================
+       FEATURES
+       ============================ */
+    .features {
+      padding: 100px 0;
+    }
+
+    .features__header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .features__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+
+    .feature-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 44px 40px;
+      box-shadow: 0 2px 12px rgba(43, 58, 74, 0.04);
+      transition: transform 300ms ease, box-shadow 300ms ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(43, 58, 74, 0.1);
+    }
+
+    .feature-card__icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-card__icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .feature-card__icon--timeline {
+      background: linear-gradient(135deg, rgba(19, 144, 255, 0.12), rgba(19, 144, 255, 0.06));
+      color: #1390FF;
+    }
+
+    .feature-card__icon--milestones {
+      background: linear-gradient(135deg, rgba(29, 181, 132, 0.12), rgba(29, 181, 132, 0.06));
+      color: #1DB584;
+    }
+
+    .feature-card__icon--reminders {
+      background: linear-gradient(135deg, rgba(232, 168, 124, 0.2), rgba(232, 168, 124, 0.08));
+      color: #c97a4a;
+    }
+
+    .feature-card__icon--emergency {
+      background: linear-gradient(135deg, rgba(239, 83, 80, 0.12), rgba(239, 83, 80, 0.06));
+      color: #ef5350;
+    }
+
+    .feature-card__title {
+      font-family: 'Fraunces', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #2B3A4A;
+      margin-bottom: 10px;
+    }
+
+    .feature-card__description {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #2B3A4A;
+      opacity: 0.7;
+    }
+
+    /* ============================
+       TESTIMONIAL
+       ============================ */
+    .testimonial {
+      padding: 100px 0;
+      background: linear-gradient(135deg, #f5ede5, #f9f2eb);
+    }
+
+    .testimonial__inner {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .testimonial__quotemark {
+      font-family: 'Fraunces', serif;
+      font-size: 72px;
+      color: #E8A87C;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .testimonial__quote {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: clamp(22px, 2.8vw, 30px);
+      font-weight: 400;
+      line-height: 1.6;
+      color: #2B3A4A;
+      margin-bottom: 40px;
+    }
+
+    .testimonial__attribution {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .testimonial__photo {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #E8A87C, #d9967a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-family: 'Fraunces', serif;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .testimonial__name {
+      font-weight: 600;
+      font-size: 17px;
+      color: #2B3A4A;
+    }
+
+    .testimonial__detail {
+      font-size: 15px;
+      color: #2B3A4A;
+      opacity: 0.6;
+    }
+
+    /* ============================
+       PROVIDERS CTA
+       ============================ */
+    .providers {
+      padding: 100px 0;
+      background: #fff;
+    }
+
+    .providers__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .providers__content {
+      max-width: 500px;
+    }
+
+    .providers__headline {
+      font-size: clamp(28px, 3vw, 40px);
+      font-weight: 600;
+      color: #2B3A4A;
+      margin-bottom: 20px;
+    }
+
+    .providers__description {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #2B3A4A;
+      opacity: 0.75;
+      margin-bottom: 32px;
+    }
+
+    .providers__visual {
+      display: flex;
+      justify-content: center;
+    }
+
+    .providers__card {
+      width: 100%;
+      max-width: 420px;
+      padding: 48px 40px;
+      background: linear-gradient(135deg, rgba(29, 181, 132, 0.06), rgba(29, 181, 132, 0.02));
+      border: 1px solid rgba(29, 181, 132, 0.15);
+      border-radius: 24px;
+    }
+
+    .providers__card-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 0;
+    }
+
+    .providers__card-feature:not(:last-child) {
+      border-bottom: 1px solid rgba(29, 181, 132, 0.1);
+    }
+
+    .providers__card-check {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      background: #1DB584;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .providers__card-check svg {
+      width: 14px;
+      height: 14px;
+      stroke: #fff;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    .providers__card-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: #2B3A4A;
+    }
+
+    /* ============================
+       FINAL CTA
+       ============================ */
+    .final-cta {
+      padding: 120px 0;
+      text-align: center;
+      background: linear-gradient(180deg, #FBF7F3 0%, #f0e9e0 100%);
+    }
+
+    .final-cta__headline {
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      color: #2B3A4A;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .final-cta__subheadline {
+      font-size: 19px;
+      color: #2B3A4A;
+      opacity: 0.7;
+      margin-bottom: 40px;
+    }
+
+    .final-cta__button {
+      margin-bottom: 20px;
+    }
+
+    .final-cta__trust {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #2B3A4A;
+      opacity: 0.5;
+    }
+
+    .final-cta__trust svg {
+      width: 16px;
+      height: 16px;
+      opacity: 0.6;
+    }
+
+    /* ============================
+       FOOTER
+       ============================ */
+    .footer {
+      padding: 80px 0 40px;
+      background: #2B3A4A;
+      color: #fff;
+    }
+
+    .footer__grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 64px;
+    }
+
+    .footer__brand {
+      max-width: 280px;
+    }
+
+    .footer__logo {
+      font-family: 'Fraunces', serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer__logo-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .footer__tagline {
+      font-size: 15px;
+      line-height: 1.7;
+      opacity: 0.6;
+    }
+
+    .footer__column-title {
+      font-family: 'Fraunces', serif;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    .footer__column ul {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer__column a {
+      font-size: 15px;
+      opacity: 0.55;
+      transition: opacity 300ms ease;
+    }
+
+    .footer__column a:hover {
+      opacity: 1;
+    }
+
+    .footer__bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer__made-with {
+      font-size: 14px;
+      opacity: 0.45;
+    }
+
+    .footer__copyright {
+      font-size: 14px;
+      opacity: 0.45;
+    }
+
+    /* ============================
+       MOBILE NAV
+       ============================ */
+    .nav__mobile-menu {
+      display: none;
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(251, 247, 243, 0.98);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 60px;
+      gap: 32px;
+      z-index: 99;
+    }
+
+    .nav__mobile-menu.open {
+      display: flex;
+    }
+
+    .nav__mobile-menu a {
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    /* ============================
+       RESPONSIVE
+       ============================ */
+    @media (max-width: 1024px) {
+      .hero__grid {
+        gap: 40px;
+      }
+
+      .providers__inner {
+        gap: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav__links {
+        display: none;
+      }
+
+      .nav__mobile-toggle {
+        display: flex;
+      }
+
+      .hero {
+        padding: 120px 0 60px;
+        min-height: auto;
+      }
+
+      .hero__grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .hero__content {
+        text-align: center;
+        max-width: 100%;
+      }
+
+      .hero__badge {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero__actions {
+        justify-content: center;
+      }
+
+      .hero__visual {
+        order: -1;
+      }
+
+      .phone-mockup {
+        width: 260px;
+        height: 500px;
+        border-radius: 32px;
+        padding: 12px;
+      }
+
+      .phone-mockup__screen {
+        border-radius: 24px;
+        padding: 16px 12px;
+      }
+
+      .pain-points {
+        padding: 60px 0;
+      }
+
+      .pain-points__grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .how-it-works {
+        padding: 60px 0;
+      }
+
+      .how-it-works__steps {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .how-it-works__steps::before {
+        display: none;
+      }
+
+      .features {
+        padding: 60px 0;
+      }
+
+      .features__grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .testimonial {
+        padding: 60px 0;
+      }
+
+      .providers {
+        padding: 60px 0;
+      }
+
+      .providers__inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .final-cta {
+        padding: 80px 0;
+      }
+
+      .footer__grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+
+      .footer__brand {
+        grid-column: 1 / -1;
+      }
+
+      .footer__bottom {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        font-size: 16px;
+      }
+
+      .hero__actions {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .btn--primary, .btn--outline {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .pain-point-card {
+        padding: 36px 24px;
+      }
+
+      .feature-card {
+        padding: 32px 24px;
+      }
+
+      .step__number {
+        width: 72px;
+        height: 72px;
+        font-size: 28px;
+      }
+
+      .footer__grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================
+       NAVIGATION
+       ============================ -->
+  <nav class="nav">
+    <div class="container nav__inner">
+      <a href="#" class="nav__logo">
+        <span class="nav__logo-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 28C16 28 4 20 4 12C4 8 7 5 10.5 5C13 5 15 6.5 16 8.5C17 6.5 19 5 21.5 5C25 5 28 8 28 12C28 20 16 28 16 28Z" fill="#E8A87C" stroke="#E8A87C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10 14L14 18L22 10" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        Post Pal
+      </a>
+
+      <div class="nav__links">
+        <a href="#how-it-works" class="nav__link">How It Works</a>
+        <a href="#features" class="nav__link">Features</a>
+        <a href="#providers" class="nav__link">For Providers</a>
+        <a href="#about" class="nav__link">About</a>
+        <a href="#contact" class="nav__cta">Learn More</a>
+      </div>
+
+      <button class="nav__mobile-toggle" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <div class="nav__mobile-menu" id="mobileMenu">
+      <a href="#how-it-works" class="nav__link" onclick="closeMobileMenu()">How It Works</a>
+      <a href="#features" class="nav__link" onclick="closeMobileMenu()">Features</a>
+      <a href="#providers" class="nav__link" onclick="closeMobileMenu()">For Providers</a>
+      <a href="#about" class="nav__link" onclick="closeMobileMenu()">About</a>
+      <a href="#contact" class="nav__cta" style="margin-top: 8px;">Learn More</a>
+    </div>
+  </nav>
+
+  <!-- ============================
+       HERO
+       ============================ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__grid">
+        <div class="hero__content">
+          <div class="hero__badge fade-up">
+            <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="7" cy="7" r="3" fill="currentColor"/>
+            </svg>
+            Currently in Beta
+          </div>
+          <h1 class="hero__headline fade-up fade-up-delay-1">Recovery is hard enough.<br>Your care plan shouldn't be.</h1>
+          <p class="hero__subheadline fade-up fade-up-delay-2">Post Pal transforms your hospital discharge instructions into a simple, day-by-day recovery timeline. Powered by AI. Guided by your doctor's instructions.</p>
+          <div class="hero__actions fade-up fade-up-delay-3">
+            <a href="#contact" class="btn--primary">Learn More</a>
+            <a href="#how-it-works" class="link--arrow">
+              See How It Works
+              <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3.75 9H14.25M14.25 9L9.75 4.5M14.25 9L9.75 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero__visual fade-up fade-up-delay-2">
+          <div class="phone-mockup">
+            <div class="phone-mockup__notch"></div>
+            <div class="phone-mockup__screen">
+              <div class="phone-mockup__header">My Recovery</div>
+              <div class="phone-mockup__subheader">Knee Replacement - Day 3</div>
+
+              <div class="phone-mockup__day-label">Today - Feb 5</div>
+
+              <div class="phone-mockup__task">
+                <div class="phone-mockup__checkbox phone-mockup__checkbox--done"></div>
+                <div>
+                  <div class="phone-mockup__task-text phone-mockup__task-text--done">Take pain medication</div>
+                  <div class="phone-mockup__task-time">8:00 AM</div>
+                </div>
+              </div>
+
+              <div class="phone-mockup__task">
+                <div class="phone-mockup__checkbox phone-mockup__checkbox--done"></div>
+                <div>
+                  <div class="phone-mockup__task-text phone-mockup__task-text--done">Ice knee for 20 minutes</div>
+                  <div class="phone-mockup__task-time">9:00 AM</div>
+                </div>
+              </div>
+
+              <div class="phone-mockup__task">
+                <div class="phone-mockup__checkbox"></div>
+                <div>
+                  <div class="phone-mockup__task-text">Gentle range-of-motion exercises</div>
+                  <div class="phone-mockup__task-time">11:00 AM</div>
+                </div>
+              </div>
+
+              <div class="phone-mockup__task">
+                <div class="phone-mockup__checkbox"></div>
+                <div>
+                  <div class="phone-mockup__task-text">Change wound dressing</div>
+                  <div class="phone-mockup__task-time">2:00 PM</div>
+                </div>
+              </div>
+
+              <div class="phone-mockup__milestone">
+                <svg class="phone-mockup__milestone-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor"/>
+                </svg>
+                <span class="phone-mockup__milestone-text">Day 3 complete! Walking with assistance unlocked.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       PAIN POINTS
+       ============================ -->
+  <section class="pain-points">
+    <div class="container">
+      <h2 class="pain-points__question fade-up">Sound familiar?</h2>
+      <div class="pain-points__grid">
+        <div class="pain-point-card fade-up fade-up-delay-1">
+          <div class="pain-point-card__icon pain-point-card__icon--papers">
+            <!-- Stack of papers icon -->
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="8" width="24" height="28" rx="2" stroke="currentColor" stroke-width="2.5"/>
+              <rect x="10" y="4" width="24" height="28" rx="2" fill="#FBF7F3" stroke="currentColor" stroke-width="2.5"/>
+              <line x1="15" y1="12" x2="29" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="15" y1="18" x2="29" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="15" y1="24" x2="23" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="pain-point-card__text">Discharged with a stack of papers you can barely read</p>
+        </div>
+
+        <div class="pain-point-card fade-up fade-up-delay-2">
+          <div class="pain-point-card__icon pain-point-card__icon--uncertain">
+            <!-- Question/uncertainty icon -->
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="20" r="14" stroke="currentColor" stroke-width="2.5"/>
+              <path d="M15 15C15 12.5 17.5 11 20 11C22.5 11 25 12.5 25 15C25 17 23 18 21 19C20 19.5 20 20.5 20 21.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="20" cy="27" r="1.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <p class="pain-point-card__text">Unsure when you can drive, lift, or return to work</p>
+        </div>
+
+        <div class="pain-point-card fade-up fade-up-delay-3">
+          <div class="pain-point-card__icon pain-point-card__icon--worried">
+            <!-- Clock/worry icon -->
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="22" r="13" stroke="currentColor" stroke-width="2.5"/>
+              <path d="M20 14V22L25 25" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 6L20 10L26 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <p class="pain-point-card__text">Worrying you'll miss a medication or follow-up appointment</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       HOW IT WORKS
+       ============================ -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="how-it-works__header fade-up">
+        <p class="section-label">How It Works</p>
+        <h2 class="section-headline">Your provider sets you up for success</h2>
+        <p class="section-subheadline">No complicated setup. Your healthcare team gets you started, and Post Pal guides you through recovery.</p>
+      </div>
+
+      <div class="how-it-works__steps">
+        <div class="step fade-up fade-up-delay-1">
+          <div class="step__number">1</div>
+          <h3 class="step__title">Your provider enrolls you</h3>
+          <p class="step__description">Before you leave, your healthcare team scans a QR code or sends you a link to get started.</p>
+          <div class="step__visual step__visual--scan">
+            <div class="step__visual-content">
+              <!-- QR code icon -->
+              <svg class="step__visual-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="6" width="14" height="14" rx="2" stroke="#3d8bd4" stroke-width="2.5"/>
+                <rect x="10" y="10" width="6" height="6" fill="#3d8bd4"/>
+                <rect x="28" y="6" width="14" height="14" rx="2" stroke="#3d8bd4" stroke-width="2.5"/>
+                <rect x="32" y="10" width="6" height="6" fill="#3d8bd4"/>
+                <rect x="6" y="28" width="14" height="14" rx="2" stroke="#3d8bd4" stroke-width="2.5"/>
+                <rect x="10" y="32" width="6" height="6" fill="#3d8bd4"/>
+                <rect x="28" y="28" width="6" height="6" fill="#3d8bd4"/>
+                <rect x="36" y="28" width="6" height="6" fill="#3d8bd4"/>
+                <rect x="28" y="36" width="6" height="6" fill="#3d8bd4"/>
+                <rect x="36" y="36" width="6" height="6" fill="#3d8bd4"/>
+              </svg>
+              <span class="step__visual-label">QR code or secure link</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step fade-up fade-up-delay-2">
+          <div class="step__number">2</div>
+          <h3 class="step__title">Download and sign in</h3>
+          <p class="step__description">Download the app and sign in with the info your provider gave you. Your personalized plan is already waiting.</p>
+          <div class="step__visual step__visual--download">
+            <div class="step__visual-content">
+              <!-- Download/phone icon -->
+              <svg class="step__visual-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="12" y="4" width="24" height="40" rx="4" stroke="#2a9d6e" stroke-width="2.5"/>
+                <line x1="20" y1="38" x2="28" y2="38" stroke="#2a9d6e" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M24 14V26M24 26L19 21M24 26L29 21" stroke="#2a9d6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="step__visual-label">Your plan is ready</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step fade-up fade-up-delay-3">
+          <div class="step__number">3</div>
+          <h3 class="step__title">Follow your recovery timeline</h3>
+          <p class="step__description">Check off daily tasks, track milestones, and know exactly what comes next. Post Pal keeps you on track.</p>
+          <div class="step__visual step__visual--follow">
+            <div class="step__visual-content">
+              <!-- Checklist/timeline icon -->
+              <svg class="step__visual-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="8" width="32" height="32" rx="4" stroke="#c97a4a" stroke-width="2.5"/>
+                <path d="M15 20L19 24L27 16" stroke="#c97a4a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="15" y1="32" x2="27" y2="32" stroke="#c97a4a" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="35" cy="35" r="8" fill="#FBF7F3" stroke="#c97a4a" stroke-width="2.5"/>
+                <path d="M35 31V35L37.5 37.5" stroke="#c97a4a" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="step__visual-label">Daily checklist & milestones</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       FEATURES
+       ============================ -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="features__header fade-up">
+        <p class="section-label">Features</p>
+        <h2 class="section-headline">Everything you need for a smoother recovery</h2>
+      </div>
+
+      <div class="features__grid">
+        <div class="feature-card fade-up fade-up-delay-1">
+          <div class="feature-card__icon feature-card__icon--timeline">
+            <!-- Calendar/timeline icon -->
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="5" width="22" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
+              <line x1="3" y1="11" x2="25" y2="11" stroke="currentColor" stroke-width="2"/>
+              <line x1="9" y1="5" x2="9" y2="2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="19" y1="5" x2="19" y2="2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <rect x="7" y="15" width="4" height="3" rx="0.5" fill="currentColor"/>
+              <rect x="12" y="15" width="4" height="3" rx="0.5" fill="currentColor"/>
+              <rect x="17" y="15" width="4" height="3" rx="0.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Your Timeline, Your Way</h3>
+          <p class="feature-card__description">Daily, weekly, and hourly views that adapt to your recovery phase. See what matters now and what's coming next.</p>
+        </div>
+
+        <div class="feature-card fade-up fade-up-delay-2">
+          <div class="feature-card__icon feature-card__icon--milestones">
+            <!-- Star/trophy icon -->
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 3L17.09 9.26L24 10.27L19 15.14L20.18 22.02L14 18.77L7.82 22.02L9 15.14L4 10.27L10.91 9.26L14 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Milestone Celebrations</h3>
+          <p class="feature-card__description">Track your progress and celebrate recovery wins along the way. Every small step forward deserves recognition.</p>
+        </div>
+
+        <div class="feature-card fade-up fade-up-delay-3">
+          <div class="feature-card__icon feature-card__icon--reminders">
+            <!-- Bell icon -->
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11 21C11 22.66 12.34 24 14 24C15.66 24 17 22.66 17 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M14 4C14 4 14 3 14 3C12.34 3 11 4.34 11 6V7C7.5 8 5 11 5 14.5V17L3 20H25L23 17V14.5C23 11 20.5 8 17 7V6C17 4.34 15.66 3 14 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Smart Reminders</h3>
+          <p class="feature-card__description">Never miss a medication, appointment, or care task. Gentle nudges that keep your recovery on track.</p>
+        </div>
+
+        <div class="feature-card fade-up fade-up-delay-4">
+          <div class="feature-card__icon feature-card__icon--emergency">
+            <!-- Heart/alert icon -->
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 24C14 24 4 18 4 11C4 7.5 6.5 5 9.5 5C11.5 5 13 6 14 7.5C15 6 16.5 5 18.5 5C21.5 5 24 7.5 24 11C24 18 14 24 14 24Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="14" y1="10" x2="14" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="14" cy="18" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Emergency Info at Your Fingertips</h3>
+          <p class="feature-card__description">Critical warning signs and emergency contacts, always one tap away. Peace of mind when you need it most.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       TESTIMONIAL
+       ============================ -->
+  <section class="testimonial">
+    <div class="container">
+      <div class="testimonial__inner fade-up">
+        <div class="testimonial__quotemark">"</div>
+        <blockquote class="testimonial__quote">
+          After my knee replacement, I was overwhelmed by the discharge instructions. Post Pal turned 12 pages into a simple daily checklist. I actually understood what I needed to do each day.
+        </blockquote>
+        <div class="testimonial__attribution">
+          <div class="testimonial__photo">S</div>
+          <div>
+            <div class="testimonial__name">Sarah M.</div>
+            <div class="testimonial__detail">Knee replacement recovery</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       FOR PROVIDERS
+       ============================ -->
+  <section class="providers" id="providers">
+    <div class="container">
+      <div class="providers__inner">
+        <div class="providers__content fade-up">
+          <p class="section-label" style="color: #1DB584;">For Providers</p>
+          <h2 class="providers__headline">Designed for patients. Built for providers.</h2>
+          <p class="providers__description">Give your patients the best post-discharge experience. QR-code onboarding, institutional dashboards, and real-time recovery monitoring.</p>
+          <a href="#contact" class="btn--outline" style="border-color: #1DB584; color: #1DB584;">
+            Learn More for Providers
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3.75 9H14.25M14.25 9L9.75 4.5M14.25 9L9.75 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="providers__visual fade-up fade-up-delay-1">
+          <div class="providers__card">
+            <div class="providers__card-feature">
+              <div class="providers__card-check">
+                <svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,4"/></svg>
+              </div>
+              <span class="providers__card-text">QR-code patient onboarding</span>
+            </div>
+            <div class="providers__card-feature">
+              <div class="providers__card-check">
+                <svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,4"/></svg>
+              </div>
+              <span class="providers__card-text">Institutional dashboards & analytics</span>
+            </div>
+            <div class="providers__card-feature">
+              <div class="providers__card-check">
+                <svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,4"/></svg>
+              </div>
+              <span class="providers__card-text">Real-time recovery monitoring</span>
+            </div>
+            <div class="providers__card-feature">
+              <div class="providers__card-check">
+                <svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,4"/></svg>
+              </div>
+              <span class="providers__card-text">HIPAA-compliant infrastructure</span>
+            </div>
+            <div class="providers__card-feature">
+              <div class="providers__card-check">
+                <svg viewBox="0 0 14 14"><polyline points="2,7 5.5,10.5 12,4"/></svg>
+              </div>
+              <span class="providers__card-text">Custom branding for your institution</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       FINAL CTA
+       ============================ -->
+  <section class="final-cta" id="contact">
+    <div class="container container--narrow">
+      <h2 class="final-cta__headline fade-up">Interested in Post Pal?</h2>
+      <p class="final-cta__subheadline fade-up fade-up-delay-1">We're currently in beta and working with select healthcare providers. Get in touch to learn more.</p>
+      <div class="final-cta__button fade-up fade-up-delay-2">
+        <a href="mailto:hello@postpal.health" class="btn--primary" style="font-size: 19px; padding: 20px 44px;">Get in Touch</a>
+      </div>
+      <div class="final-cta__trust fade-up fade-up-delay-3">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 1.5L2 4V7.5C2 11.09 4.56 14.41 8 15.5C11.44 14.41 14 11.09 14 7.5V4L8 1.5Z" stroke="#2B3A4A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5.5 8L7 9.5L10.5 6" stroke="#2B3A4A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Your health data is encrypted and private.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       FOOTER
+       ============================ -->
+  <footer class="footer" id="about">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <div class="footer__logo">
+            <span class="footer__logo-icon">
+              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 28C16 28 4 20 4 12C4 8 7 5 10.5 5C13 5 15 6.5 16 8.5C17 6.5 19 5 21.5 5C25 5 28 8 28 12C28 20 16 28 16 28Z" fill="#E8A87C" stroke="#E8A87C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 14L14 18L22 10" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Post Pal
+          </div>
+          <p class="footer__tagline">Your AI-powered companion for a smoother, less stressful medical recovery.</p>
+        </div>
+
+        <div class="footer__column">
+          <h4 class="footer__column-title">Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#providers">For Providers</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__column">
+          <h4 class="footer__column-title">Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__column">
+          <h4 class="footer__column-title">Legal</h4>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">HIPAA</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__made-with">Made with care</span>
+        <span class="footer__copyright">2026 Post Pal. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================
+       JAVASCRIPT
+       ============================ -->
+  <script>
+    // ---- Scroll-triggered fade-up animations ----
+    document.addEventListener('DOMContentLoaded', function () {
+      var fadeElements = document.querySelectorAll('.fade-up');
+
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.15,
+          rootMargin: '0px 0px -40px 0px'
+        });
+
+        fadeElements.forEach(function (el) {
+          observer.observe(el);
+        });
+      } else {
+        // Fallback: show everything immediately
+        fadeElements.forEach(function (el) {
+          el.classList.add('visible');
+        });
+      }
+    });
+
+    // ---- Mobile menu toggle ----
+    function toggleMobileMenu() {
+      var menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('open');
+    }
+
+    function closeMobileMenu() {
+      var menu = document.getElementById('mobileMenu');
+      menu.classList.remove('open');
+    }
+
+    // ---- Smooth scroll for anchor links (fallback for browsers without CSS smooth scroll) ----
+    document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+      anchor.addEventListener('click', function (e) {
+        var targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        var target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          closeMobileMenu();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

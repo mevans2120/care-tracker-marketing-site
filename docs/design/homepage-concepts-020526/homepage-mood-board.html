@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post Pal - Homepage Design Mood Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0c0e13;
+      color: #e4e7ec;
+      padding: 60px 40px 100px;
+      line-height: 1.6;
+    }
+
+    .mood-header {
+      max-width: 900px;
+      margin: 0 auto 80px;
+      text-align: center;
+    }
+    .mood-header h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 42px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4DAFFF, #2DD4A8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+    }
+    .mood-header p {
+      font-size: 17px;
+      color: #8b93a1;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .mood-header .date {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #555d6e;
+      border: 1px solid #2a2e38;
+      padding: 6px 16px;
+      border-radius: 20px;
+    }
+
+    section {
+      max-width: 1100px;
+      margin: 0 auto 80px;
+    }
+    section h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #f0f2f5;
+    }
+    section .section-desc {
+      font-size: 15px;
+      color: #6b7280;
+      margin-bottom: 36px;
+      max-width: 700px;
+    }
+
+    /* Direction Cards */
+    .directions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .direction-card {
+      background: #14171e;
+      border: 1px solid #22262f;
+      border-radius: 16px;
+      padding: 32px 28px;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .direction-card:hover {
+      border-color: #3a4050;
+      transform: translateY(-4px);
+    }
+    .direction-card .label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+    }
+    .direction-card h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #f0f2f5;
+      margin-bottom: 10px;
+    }
+    .direction-card p {
+      font-size: 14px;
+      color: #8b93a1;
+      line-height: 1.7;
+    }
+    .direction-card .tags {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .direction-card .tags span {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.05);
+      color: #8b93a1;
+    }
+
+    /* Color Palettes */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .palette-group {
+      background: #14171e;
+      border: 1px solid #22262f;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .palette-group .palette-header {
+      padding: 20px 24px 12px;
+    }
+    .palette-group .palette-header h4 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #f0f2f5;
+      margin-bottom: 4px;
+    }
+    .palette-group .palette-header p {
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .swatch-row {
+      display: flex;
+      height: 80px;
+    }
+    .swatch {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      padding: 8px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      transition: flex 0.3s ease;
+      cursor: default;
+    }
+    .swatch:hover { flex: 1.8; }
+    .swatch span {
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      color: inherit;
+    }
+    .swatch:hover span { opacity: 1; }
+    .palette-group .palette-footer {
+      padding: 12px 24px 16px;
+      font-size: 12px;
+      color: #555d6e;
+    }
+
+    /* Typography */
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .type-card {
+      background: #14171e;
+      border: 1px solid #22262f;
+      border-radius: 16px;
+      padding: 32px 28px;
+      transition: border-color 0.3s ease;
+    }
+    .type-card:hover { border-color: #3a4050; }
+    .type-card .type-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 20px;
+    }
+    .type-sample {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #1e222b;
+    }
+    .type-sample:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .type-meta {
+      font-size: 11px;
+      color: #555d6e;
+      margin-top: 6px;
+    }
+
+    /* Spacing & Radius */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .detail-card {
+      background: #14171e;
+      border: 1px solid #22262f;
+      border-radius: 16px;
+      padding: 32px 28px;
+    }
+    .detail-card h4 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #f0f2f5;
+      margin-bottom: 20px;
+    }
+    .spacing-demo {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .spacing-bar {
+      border-radius: 4px;
+      min-width: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: rgba(255,255,255,0.7);
+      transition: opacity 0.2s;
+    }
+    .radius-demo {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .radius-sample {
+      width: 72px;
+      height: 72px;
+      background: #1e222b;
+      border: 1px solid #2a2e38;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #6b7280;
+      transition: background 0.2s;
+    }
+    .radius-sample:hover { background: #252930; }
+
+    /* Component Samples */
+    .component-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .component-card {
+      background: #14171e;
+      border: 1px solid #22262f;
+      border-radius: 16px;
+      padding: 28px 24px;
+    }
+    .component-card h4 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #f0f2f5;
+      margin-bottom: 20px;
+    }
+    .btn-sample {
+      display: inline-block;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      margin-bottom: 10px;
+    }
+    .btn-sample:hover { transform: translateY(-2px); }
+
+    .card-sample {
+      background: #1a1e27;
+      border: 1px solid #262b36;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.25s ease;
+    }
+    .card-sample:hover {
+      border-color: #3a7fff;
+      box-shadow: 0 0 20px rgba(58, 127, 255, 0.1);
+    }
+
+    /* Animation demos */
+    .anim-demo {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .anim-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: #4DAFFF;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .anim-dot:nth-child(2) { animation-delay: 0.3s; background: #2DD4A8; }
+    .anim-dot:nth-child(3) { animation-delay: 0.6s; background: #ED7B61; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.5); opacity: 1; }
+    }
+
+    .stagger-demo > div {
+      height: 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      animation: slideIn 1.5s ease-out infinite;
+    }
+    @keyframes slideIn {
+      0% { transform: translateX(-20px); opacity: 0; }
+      20% { transform: translateX(0); opacity: 1; }
+      80% { transform: translateX(0); opacity: 1; }
+      100% { transform: translateX(20px); opacity: 0; }
+    }
+
+    /* Inspiration */
+    .inspiration-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .inspiration-card {
+      background: #14171e;
+      border: 1px solid #22262f;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .inspiration-card:hover {
+      border-color: #3a4050;
+      transform: translateY(-4px);
+    }
+    .inspiration-card .preview {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #555d6e;
+      position: relative;
+      overflow: hidden;
+    }
+    .inspiration-card .info {
+      padding: 20px 24px;
+    }
+    .inspiration-card .info h4 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #f0f2f5;
+      margin-bottom: 4px;
+    }
+    .inspiration-card .info p {
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 30px 20px; }
+      .directions, .palette-grid, .type-grid, .component-grid, .inspiration-grid { grid-template-columns: 1fr; }
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="mood-header">
+    <h1>Post Pal Homepage Mood Board</h1>
+    <p>Visual exploration across three distinct design directions for the Post Pal marketing homepage. Each direction takes a different strategic approach to content, tone, and aesthetic.</p>
+    <span class="date">February 5, 2026</span>
+  </div>
+
+  <!-- 3 Directions Overview -->
+  <section>
+    <h2>Three Directions</h2>
+    <p class="section-desc">Each concept explores a meaningfully different approach to information architecture, visual tone, and conversion strategy.</p>
+
+    <div class="directions">
+      <div class="direction-card">
+        <div class="label" style="color: #E8A87C;">Concept 1</div>
+        <h3>Warm Editorial</h3>
+        <p>Empathy-first storytelling with serif headlines, warm photography, and a narrative layout. Leads with emotional pain-point validation before revealing the product. Feels like a trusted health publication, not a tech product.</p>
+        <div class="tags">
+          <span>Serif headlines</span>
+          <span>Warm tones</span>
+          <span>Story-driven</span>
+          <span>Light theme</span>
+        </div>
+      </div>
+      <div class="direction-card">
+        <div class="label" style="color: #4DAFFF;">Concept 2</div>
+        <h3>Bold Product-Forward</h3>
+        <p>Dark, immersive canvas that puts the product UI center stage with glowing, elevated mockups. AI-forward messaging positions Post Pal as cutting-edge health technology. High contrast, cinematic feel.</p>
+        <div class="tags">
+          <span>Dark theme</span>
+          <span>Glowing UI</span>
+          <span>AI-forward</span>
+          <span>Cinematic</span>
+        </div>
+      </div>
+      <div class="direction-card">
+        <div class="label" style="color: #2DD4A8;">Concept 3</div>
+        <h3>Clean Conversion Engine</h3>
+        <p>Light, structured, stats-driven design optimized for conversion. Clear visual hierarchy with numbered steps, metric callouts, and repeated CTAs. Modern SaaS landing page energy adapted for healthcare warmth.</p>
+        <div class="tags">
+          <span>Light + airy</span>
+          <span>Stats-driven</span>
+          <span>Structured</span>
+          <span>High conversion</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Color Palettes -->
+  <section>
+    <h2>Color Palettes</h2>
+    <p class="section-desc">Each direction adapts Post Pal's core brand colors (blue #1390FF, teal #1DB584, coral #E55A3D) to match its strategic tone.</p>
+
+    <div class="palette-grid">
+      <!-- Concept 1 Palette -->
+      <div class="palette-group">
+        <div class="palette-header">
+          <h4>Warm Editorial</h4>
+          <p>Softened brand colors + warm neutrals</p>
+        </div>
+        <div class="swatch-row">
+          <div class="swatch" style="background: #FBF7F3; color: #5a4a3a;"><span>#FBF7F3</span></div>
+          <div class="swatch" style="background: #2B3A4A; color: #c8d0da;"><span>#2B3A4A</span></div>
+          <div class="swatch" style="background: #1390FF; color: #fff;"><span>#1390FF</span></div>
+          <div class="swatch" style="background: #1DB584; color: #fff;"><span>#1DB584</span></div>
+          <div class="swatch" style="background: #E8A87C; color: #3a2a1a;"><span>#E8A87C</span></div>
+        </div>
+        <div class="palette-footer">Cream backgrounds, deep navy text, softened coral accent</div>
+      </div>
+
+      <!-- Concept 2 Palette -->
+      <div class="palette-group">
+        <div class="palette-header">
+          <h4>Bold Product-Forward</h4>
+          <p>Vivid brand colors on deep dark canvas</p>
+        </div>
+        <div class="swatch-row">
+          <div class="swatch" style="background: #0A0E17; color: #6b7280;"><span>#0A0E17</span></div>
+          <div class="swatch" style="background: #141926; color: #6b7280;"><span>#141926</span></div>
+          <div class="swatch" style="background: #4DAFFF; color: #0A0E17;"><span>#4DAFFF</span></div>
+          <div class="swatch" style="background: #2DD4A8; color: #0A0E17;"><span>#2DD4A8</span></div>
+          <div class="swatch" style="background: #ED7B61; color: #0A0E17;"><span>#ED7B61</span></div>
+        </div>
+        <div class="palette-footer">Near-black base, luminous saturated accents, glow effects</div>
+      </div>
+
+      <!-- Concept 3 Palette -->
+      <div class="palette-group">
+        <div class="palette-header">
+          <h4>Clean Conversion Engine</h4>
+          <p>Crisp whites, brand primaries at full strength</p>
+        </div>
+        <div class="swatch-row">
+          <div class="swatch" style="background: #FFFFFF; color: #374151;"><span>#FFFFFF</span></div>
+          <div class="swatch" style="background: #F0F7FF; color: #374151;"><span>#F0F7FF</span></div>
+          <div class="swatch" style="background: #1390FF; color: #fff;"><span>#1390FF</span></div>
+          <div class="swatch" style="background: #1DB584; color: #fff;"><span>#1DB584</span></div>
+          <div class="swatch" style="background: #1A2332; color: #c8d0da;"><span>#1A2332</span></div>
+        </div>
+        <div class="palette-footer">White canvas, blue primary CTAs, teal for success/progress</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Typography -->
+  <section>
+    <h2>Typography</h2>
+    <p class="section-desc">Each concept uses a distinct typographic pairing to set its tone. All maintain minimum 16px body text for accessibility.</p>
+
+    <div class="type-grid">
+      <!-- Concept 1 Type -->
+      <div class="type-card">
+        <div class="type-label" style="color: #E8A87C;">Concept 1: Warm Editorial</div>
+
+        <div class="type-sample">
+          <div style="font-family: 'Fraunces', serif; font-size: 36px; font-weight: 500; color: #f0f2f5; line-height: 1.15;">
+            Recovery is hard enough.
+          </div>
+          <div class="type-meta">Fraunces Medium / 36px / Headlines</div>
+        </div>
+        <div class="type-sample">
+          <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 300; font-style: italic; color: #a0aab6; line-height: 1.4;">
+            Your care plan shouldn't be.
+          </div>
+          <div class="type-meta">Fraunces Light Italic / 22px / Subheads</div>
+        </div>
+        <div class="type-sample">
+          <div style="font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 400; color: #8b93a1; line-height: 1.7;">
+            Post Pal transforms your discharge instructions into a clear, day-by-day recovery timeline.
+          </div>
+          <div class="type-meta">DM Sans Regular / 16px / Body</div>
+        </div>
+      </div>
+
+      <!-- Concept 2 Type -->
+      <div class="type-card">
+        <div class="type-label" style="color: #4DAFFF;">Concept 2: Bold Product-Forward</div>
+
+        <div class="type-sample">
+          <div style="font-family: 'Manrope', sans-serif; font-size: 36px; font-weight: 800; color: #f0f2f5; line-height: 1.1; letter-spacing: -1px;">
+            AI reads your discharge papers.
+          </div>
+          <div class="type-meta">Manrope ExtraBold / 36px / Headlines</div>
+        </div>
+        <div class="type-sample">
+          <div style="font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 500; color: #6b7280; line-height: 1.5;">
+            You follow a simple timeline.
+          </div>
+          <div class="type-meta">Manrope Medium / 20px / Subheads</div>
+        </div>
+        <div class="type-sample">
+          <div style="font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 400; color: #8b93a1; line-height: 1.7;">
+            Powered by advanced AI, Post Pal creates a personalized recovery plan from your hospital discharge instructions.
+          </div>
+          <div class="type-meta">Manrope Regular / 16px / Body</div>
+        </div>
+      </div>
+
+      <!-- Concept 3 Type -->
+      <div class="type-card">
+        <div class="type-label" style="color: #2DD4A8;">Concept 3: Clean Conversion</div>
+
+        <div class="type-sample">
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 36px; font-weight: 700; color: #f0f2f5; line-height: 1.15;">
+            Your recovery, one day at a time
+          </div>
+          <div class="type-meta">Plus Jakarta Sans Bold / 36px / Headlines</div>
+        </div>
+        <div class="type-sample">
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; font-weight: 500; color: #8b93a1; line-height: 1.5;">
+            Join thousands of patients taking control of their post-surgery recovery.
+          </div>
+          <div class="type-meta">Plus Jakarta Sans Medium / 20px / Subheads</div>
+        </div>
+        <div class="type-sample">
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 400; color: #8b93a1; line-height: 1.7;">
+            Upload your discharge papers, and our AI creates a personalized daily recovery plan with reminders and milestones.
+          </div>
+          <div class="type-meta">Plus Jakarta Sans Regular / 16px / Body</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Spacing & Radius -->
+  <section>
+    <h2>Spacing & Shape Language</h2>
+    <p class="section-desc">Consistent spacing scale and border radius choices create rhythm and personality across each direction.</p>
+
+    <div class="detail-grid">
+      <div class="detail-card">
+        <h4>Spacing Scale (shared across concepts)</h4>
+        <div class="spacing-demo">
+          <div>
+            <div class="spacing-bar" style="background: #4DAFFF; height: 4px; width: 40px;"></div>
+            <div class="type-meta" style="margin-top:4px;">4px</div>
+          </div>
+          <div>
+            <div class="spacing-bar" style="background: #4DAFFF; height: 8px; width: 40px;"></div>
+            <div class="type-meta" style="margin-top:4px;">8px</div>
+          </div>
+          <div>
+            <div class="spacing-bar" style="background: #4DAFFF; height: 16px; width: 40px;"></div>
+            <div class="type-meta" style="margin-top:4px;">16px</div>
+          </div>
+          <div>
+            <div class="spacing-bar" style="background: #4DAFFF; height: 24px; width: 40px;"></div>
+            <div class="type-meta" style="margin-top:4px;">24px</div>
+          </div>
+          <div>
+            <div class="spacing-bar" style="background: #4DAFFF; height: 32px; width: 40px;"></div>
+            <div class="type-meta" style="margin-top:4px;">32px</div>
+          </div>
+          <div>
+            <div class="spacing-bar" style="background: #4DAFFF; height: 48px; width: 40px;"></div>
+            <div class="type-meta" style="margin-top:4px;">48px</div>
+          </div>
+          <div>
+            <div class="spacing-bar" style="background: #4DAFFF; height: 64px; width: 40px;"></div>
+            <div class="type-meta" style="margin-top:4px;">64px</div>
+          </div>
+          <div>
+            <div class="spacing-bar" style="background: #4DAFFF; height: 80px; width: 40px;"></div>
+            <div class="type-meta" style="margin-top:4px;">80px</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <h4>Border Radius by Concept</h4>
+        <div style="margin-bottom: 20px;">
+          <div class="type-meta" style="margin-bottom: 8px; color: #E8A87C;">Concept 1: Warm Editorial - Softer, rounder</div>
+          <div class="radius-demo">
+            <div class="radius-sample" style="border-radius: 8px;">8px</div>
+            <div class="radius-sample" style="border-radius: 16px;">16px</div>
+            <div class="radius-sample" style="border-radius: 24px;">24px</div>
+            <div class="radius-sample" style="border-radius: 50%;">50%</div>
+          </div>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <div class="type-meta" style="margin-bottom: 8px; color: #4DAFFF;">Concept 2: Bold Product - Sharper, more angular</div>
+          <div class="radius-demo">
+            <div class="radius-sample" style="border-radius: 4px;">4px</div>
+            <div class="radius-sample" style="border-radius: 8px;">8px</div>
+            <div class="radius-sample" style="border-radius: 12px;">12px</div>
+            <div class="radius-sample" style="border-radius: 16px;">16px</div>
+          </div>
+        </div>
+        <div>
+          <div class="type-meta" style="margin-bottom: 8px; color: #2DD4A8;">Concept 3: Clean Conversion - Balanced, medium</div>
+          <div class="radius-demo">
+            <div class="radius-sample" style="border-radius: 6px;">6px</div>
+            <div class="radius-sample" style="border-radius: 12px;">12px</div>
+            <div class="radius-sample" style="border-radius: 20px;">20px</div>
+            <div class="radius-sample" style="border-radius: 999px;">pill</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Component Examples -->
+  <section>
+    <h2>Component Samples</h2>
+    <p class="section-desc">Key interactive elements showing hover states, transitions, and visual treatment per direction.</p>
+
+    <div class="component-grid">
+      <!-- Concept 1 Components -->
+      <div class="component-card">
+        <h4 style="color: #E8A87C;">Concept 1: Buttons & Cards</h4>
+        <div style="margin-bottom: 16px;">
+          <button class="btn-sample" style="background: #1390FF; color: white; border-radius: 24px; font-family: 'DM Sans', sans-serif;" onmouseover="this.style.background='#0f7ae0'; this.style.boxShadow='0 8px 24px rgba(19,144,255,0.3)'" onmouseout="this.style.background='#1390FF'; this.style.boxShadow='none'">
+            Start Your Recovery Plan
+          </button>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <button class="btn-sample" style="background: transparent; color: #1390FF; border: 2px solid #1390FF; border-radius: 24px; font-family: 'DM Sans', sans-serif;" onmouseover="this.style.background='rgba(19,144,255,0.1)'" onmouseout="this.style.background='transparent'">
+            See How It Works
+          </button>
+        </div>
+        <div class="card-sample" style="border-radius: 16px; background: #1a1e27; border-color: #262b36;">
+          <div style="font-family: 'Fraunces', serif; font-size: 18px; color: #f0f2f5; margin-bottom: 6px;">Week 2: Building Strength</div>
+          <div style="font-size: 13px; color: #6b7280;">Light walking, medication management, wound care check</div>
+        </div>
+      </div>
+
+      <!-- Concept 2 Components -->
+      <div class="component-card">
+        <h4 style="color: #4DAFFF;">Concept 2: Buttons & Cards</h4>
+        <div style="margin-bottom: 16px;">
+          <button class="btn-sample" style="background: linear-gradient(135deg, #4DAFFF, #2DD4A8); color: #0A0E17; font-family: 'Manrope', sans-serif; font-weight: 700; border-radius: 10px;" onmouseover="this.style.boxShadow='0 0 30px rgba(77,175,255,0.4), 0 0 60px rgba(45,212,168,0.2)'" onmouseout="this.style.boxShadow='none'">
+            Try Post Pal Free
+          </button>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <button class="btn-sample" style="background: rgba(77,175,255,0.1); color: #4DAFFF; border: 1px solid rgba(77,175,255,0.3); font-family: 'Manrope', sans-serif; font-weight: 600; border-radius: 10px;" onmouseover="this.style.borderColor='rgba(77,175,255,0.6)'; this.style.boxShadow='0 0 20px rgba(77,175,255,0.15)'" onmouseout="this.style.borderColor='rgba(77,175,255,0.3)'; this.style.boxShadow='none'">
+            Watch Demo
+          </button>
+        </div>
+        <div class="card-sample" style="border-radius: 12px; background: rgba(77,175,255,0.05); border-color: rgba(77,175,255,0.15);">
+          <div style="font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 700; color: #4DAFFF; margin-bottom: 6px;">Week 2: Building Strength</div>
+          <div style="font-size: 13px; color: #6b7280;">Light walking, medication management, wound care check</div>
+        </div>
+      </div>
+
+      <!-- Concept 3 Components -->
+      <div class="component-card">
+        <h4 style="color: #2DD4A8;">Concept 3: Buttons & Cards</h4>
+        <div style="margin-bottom: 16px;">
+          <button class="btn-sample" style="background: #1390FF; color: white; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; border-radius: 999px; padding: 14px 36px;" onmouseover="this.style.background='#0f7ae0'; this.style.boxShadow='0 4px 16px rgba(19,144,255,0.35)'" onmouseout="this.style.background='#1390FF'; this.style.boxShadow='none'">
+            Get Started Free
+          </button>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <button class="btn-sample" style="background: #f0f7ff; color: #1390FF; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; border-radius: 999px; border: none;" onmouseover="this.style.background='#e0efff'" onmouseout="this.style.background='#f0f7ff'">
+            For Healthcare Providers
+          </button>
+        </div>
+        <div class="card-sample" style="border-radius: 12px; background: #1a1e27; border-color: #262b36;">
+          <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 600; color: #f0f2f5; margin-bottom: 6px;">Week 2: Building Strength</div>
+          <div style="font-size: 13px; color: #6b7280;">Light walking, medication management, wound care check</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Motion / Animation -->
+  <section>
+    <h2>Motion & Animation</h2>
+    <p class="section-desc">Each concept uses a different motion personality to reinforce its design direction.</p>
+
+    <div class="component-grid">
+      <div class="component-card">
+        <h4 style="color: #E8A87C;">Concept 1: Gentle Fades</h4>
+        <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px;">Slow, gentle fade-ups (600ms ease-out). Content appears like turning pages. Minimal movement, maximum grace.</p>
+        <div class="stagger-demo">
+          <div style="background: #E8A87C; width: 70%; animation-delay: 0s;"></div>
+          <div style="background: #E8A87C; width: 55%; animation-delay: 0.2s; opacity: 0.7;"></div>
+          <div style="background: #E8A87C; width: 40%; animation-delay: 0.4s; opacity: 0.5;"></div>
+        </div>
+      </div>
+      <div class="component-card">
+        <h4 style="color: #4DAFFF;">Concept 2: Dramatic Reveals</h4>
+        <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px;">Scroll-triggered parallax layers, glowing pulse effects, staggered element entrances with spring physics.</p>
+        <div class="anim-demo">
+          <div class="anim-dot"></div>
+          <div class="anim-dot"></div>
+          <div class="anim-dot"></div>
+          <span style="font-size: 12px; color: #555d6e; margin-left: 8px;">Pulse + glow effects</span>
+        </div>
+      </div>
+      <div class="component-card">
+        <h4 style="color: #2DD4A8;">Concept 3: Crisp Transitions</h4>
+        <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px;">Quick, purposeful (300ms ease). Counter animations for stats, smooth tab switches, subtle hover lifts.</p>
+        <div class="stagger-demo">
+          <div style="background: #2DD4A8; width: 85%; animation-duration: 1s;"></div>
+          <div style="background: #2DD4A8; width: 65%; animation-duration: 1s; animation-delay: 0.1s; opacity: 0.7;"></div>
+          <div style="background: #2DD4A8; width: 45%; animation-duration: 1s; animation-delay: 0.2s; opacity: 0.5;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Inspiration References -->
+  <section>
+    <h2>Design Inspiration</h2>
+    <p class="section-desc">Reference points for each direction's visual language and interaction patterns.</p>
+
+    <div class="inspiration-grid">
+      <div class="inspiration-card">
+        <div class="preview" style="background: linear-gradient(135deg, #FBF7F3, #f0e8dd);">
+          <div style="text-align: center;">
+            <div style="font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500; color: #2B3A4A;">Calm. Editorial.</div>
+            <div style="font-family: 'DM Sans', sans-serif; font-size: 13px; color: #8b7b6b; margin-top: 8px;">Magazine-quality warmth</div>
+          </div>
+        </div>
+        <div class="info">
+          <h4>Concept 1 References</h4>
+          <p>Headspace's editorial health content, One Medical's clean warmth, Calm app's serene marketing, The New Yorker's typographic authority</p>
+        </div>
+      </div>
+      <div class="inspiration-card">
+        <div class="preview" style="background: linear-gradient(135deg, #0A0E17, #141926);">
+          <div style="text-align: center;">
+            <div style="font-family: 'Manrope', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -1px;">
+              <span style="background: linear-gradient(135deg, #4DAFFF, #2DD4A8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Bold. Luminous.</span>
+            </div>
+            <div style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #555d6e; margin-top: 8px;">Product as the hero</div>
+          </div>
+        </div>
+        <div class="info">
+          <h4>Concept 2 References</h4>
+          <p>Linear's dark product showcase, Vercel's gradient glow aesthetic, Arc browser's bold marketing, Raycast's developer-meets-design energy</p>
+        </div>
+      </div>
+      <div class="inspiration-card">
+        <div class="preview" style="background: linear-gradient(180deg, #FFFFFF, #F0F7FF);">
+          <div style="text-align: center;">
+            <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 28px; font-weight: 700; color: #1A2332;">Clear. Efficient.</div>
+            <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: #6b7280; margin-top: 8px;">Every element earns its space</div>
+          </div>
+        </div>
+        <div class="info">
+          <h4>Concept 3 References</h4>
+          <p>Stripe's structured clarity, Notion's clean onboarding, Caily's modern healthcare SaaS, Mercury bank's trustworthy simplicity</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
