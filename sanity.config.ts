@@ -5,8 +5,8 @@ import { presentationTool } from 'sanity/presentation'
 import { schemaTypes } from './sanity/schemaTypes'
 import { structure } from './sanity/deskStructure'
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'vtck6b2g'
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
 
 export default defineConfig({
   name: 'postpal',
