@@ -1,13 +1,11 @@
 import { createClient } from 'next-sanity'
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'vtck6b2g'
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
-const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-01-01'
-
+// Hardcoded values to ensure build works on Vercel
+// These values are public (NEXT_PUBLIC_*) so it's safe to hardcode
 export const client = createClient({
-  projectId,
-  dataset,
-  apiVersion,
+  projectId: 'vtck6b2g',
+  dataset: 'production',
+  apiVersion: '2024-01-01',
   useCdn: process.env.NODE_ENV === 'production',
   perspective: 'published',
   stega: {
