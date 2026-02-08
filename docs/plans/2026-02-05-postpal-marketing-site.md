@@ -112,7 +112,7 @@ From the approved concept:
 
 Run:
 ```bash
-cd /Users/michaelevans/care-tracker-marketing-site
+cd /Users/michaelevans/repos/care-tracker-marketing-site
 npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm
 ```
 
@@ -313,7 +313,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
 Run:
 ```bash
-cd /Users/michaelevans/care-tracker-marketing-site
+cd /Users/michaelevans/repos/care-tracker-marketing-site
 npm install sanity @sanity/vision @sanity/image-url next-sanity
 ```
 
@@ -471,7 +471,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
 **Step 1: Create schema directory**
 
-Run: `mkdir -p /Users/michaelevans/care-tracker-marketing-site/sanity/schemaTypes`
+Run: `mkdir -p /Users/michaelevans/repos/care-tracker-marketing-site/sanity/schemaTypes`
 
 **Step 2: Create siteSettings schema (singleton)**
 
@@ -1232,7 +1232,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
 **Step 1: Create Sanity client**
 
-Create directory: `mkdir -p /Users/michaelevans/care-tracker-marketing-site/sanity/lib`
+Create directory: `mkdir -p /Users/michaelevans/repos/care-tracker-marketing-site/sanity/lib`
 
 Create `sanity/lib/client.ts`:
 
@@ -1466,7 +1466,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
 **Step 1: Create type definitions**
 
-Create directory: `mkdir -p /Users/michaelevans/care-tracker-marketing-site/src/types`
+Create directory: `mkdir -p /Users/michaelevans/repos/care-tracker-marketing-site/src/types`
 
 Create `src/types/sanity.ts`:
 
@@ -1576,7 +1576,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
 **Step 1: Create icons directory**
 
-Run: `mkdir -p /Users/michaelevans/care-tracker-marketing-site/src/components/icons`
+Run: `mkdir -p /Users/michaelevans/repos/care-tracker-marketing-site/src/components/icons`
 
 **Step 2: Create Logo component**
 
@@ -1971,7 +1971,7 @@ export function Features({ settings, features }: FeaturesProps) {
 
 Create each component file following the patterns established in Tasks 5-12 of the original plan, but now accepting Sanity data as props.
 
-See the original concept HTML at `/Users/michaelevans/care-tracker-marketing-site/docs/design/homepage-concepts-020526/homepage-concept-1-warm-editorial.html` for the exact markup and styling.
+See the original concept HTML at `/Users/michaelevans/repos/care-tracker-marketing-site/docs/design/homepage-concepts-020526/homepage-concept-1-warm-editorial.html` for the exact markup and styling.
 
 **Step 2: Create components index**
 
@@ -2013,7 +2013,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
 **Step 1: Create hooks directory and useScrollAnimation hook**
 
-Run: `mkdir -p /Users/michaelevans/care-tracker-marketing-site/src/hooks`
+Run: `mkdir -p /Users/michaelevans/repos/care-tracker-marketing-site/src/hooks`
 
 Create `src/hooks/useScrollAnimation.ts`:
 
@@ -2189,7 +2189,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
 **Step 1: Create seed script**
 
-Create directory: `mkdir -p /Users/michaelevans/care-tracker-marketing-site/scripts`
+Create directory: `mkdir -p /Users/michaelevans/repos/care-tracker-marketing-site/scripts`
 
 Create `scripts/seed-content.ts`:
 
